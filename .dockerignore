@@ -1,0 +1,38 @@
+# Node modules directory
+node_modules
+
+# Logs
+logs
+*.log
+
+# Dependency directories
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# MacOS files
+.DS_Store
+
+# Dist directory (if you're building files locally)
+dist
+
+# Environment variables
+.env
+
+# Docker files
+Dockerfile
+docker-compose.yml
+
+# Ignore test files
+test/
+__tests__/
+*.spec.js
+*.test.js
+
+# Ignore IDE/editor config files
+.vscode/
+.idea/
+*.swp
+
+# Ignore any build artifacts
+coverage/
