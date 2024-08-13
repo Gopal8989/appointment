@@ -88,11 +88,14 @@ This application uses Swagger for API documentation. You can access the Swagger 
 
 After running the application, you can access the Swagger documentation at:
 
-[http://localhost:4000/api/docs](http://localhost:4000/api/docs)
+[http://localhost:4000/api-docs](http://localhost:4000/api-docs)
 
 Replace `localhost:4000` with your actual server address if you're deploying this application in a different environment.
 
 ```
 
 ```
+
+First create account
+
 # appointment

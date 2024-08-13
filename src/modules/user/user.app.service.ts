@@ -38,6 +38,9 @@ export class UsersService {
     if (!userRes) {
       throw new UnauthorizedException('Invalid credentials!');
     }
+    if (userRes?.isActive) {
+      throw new UnauthorizedException('User not active please contact admin');
+    }
     const isMatch = await bcrypt.compare(payload?.password, userRes?.password);
     if (isMatch == false) {
       throw new UnauthorizedException('Invalid credentials!');

@@ -70,7 +70,6 @@ export class AppointmentService {
     if (!availabilityResult) {
       throw new BadRequestException(`Availability not exist`);
     }
-    // if()
 
     const appointment = this.appointmentRepository.create(bodyData);
     const result: any = await this.appointmentRepository.save(appointment);
@@ -129,7 +128,9 @@ export class AppointmentService {
         'appointment.appointmentEnd',
         'appointment.status',
         'appointment.createdAt',
-        'user.id',
+        'user.id', // describe('getAppointmentsPerService', () => {
+        //   it('should return appointments per service', async () => {
+        //     const result =
         'user.firstName',
         'user.lastName',
         'service.id',

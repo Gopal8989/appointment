@@ -1,138 +1,228 @@
 import { Test, TestingModule } from '@nestjs/testing';
-import { ServiceController } from './appointment.app.controller';
-import { ServicesService } from './appointment.app.service';
+import { AppointmentController } from './appointment.app.controller';
+import { AppointmentService } from './appointment.app.service';
 import {
-  CreateServiceDto,
-  UpdateServiceDto,
-  PaginationDto,
-  SortDto,
-  ServiceCreateRes,
-  ServiceDetailsRes,
+  CreateAppointmentDto,
+  FilterDto,
+  UpdateAppointmentDto,
 } from './appointment.dto';
+import { AppointmentSchema } from './appointment.entity';
 import { AuthGuard } from '../../midleware/user.auth.guard';
-import { Role } from 'src/enum/role.enum';
-import { Roles } from '../../midleware/roles.decorator';
 import { HttpStatus } from '@nestjs/common';
 
-describe('ServiceController', () => {
-  let controller: ServiceController;
-  let service: ServicesService;
-
-  const mockService = {
-    serviceCreate: jest.fn(),
-    serviceUpdate: jest.fn(),
-    serviceDetails: jest.fn(),
-    getServices: jest.fn(),
-    serviceDelete: jest.fn(),
-  };
+describe('AppointmentController', () => {
+  let appointmentController: AppointmentController;
+  let appointmentService: AppointmentService;
 
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
-      controllers: [ServiceController],
+      controllers: [AppointmentController],
       providers: [
         {
-          provide: ServicesService,
-          useValue: mockService,
+          provide: AppointmentService,
+          useValue: {
+            create: jest.fn(),
+            findAll: jest.fn(),
+            findOne: jest.fn(),
+            update: jest.fn(),
+            remove: jest.fn(),
+            getAppointmentsPerService: jest.fn(),
+            getUserActivity: jest.fn(),
+            getTrendsOverTime: jest.fn(),
+            updateStatus: jest.fn(),
+          },
         },
       ],
-    }).compile();
+    })
+      .overrideGuard(AuthGuard)
+      .useValue({ canActivate: () => true })
+      .compile();
 
-    controller = module.get<ServiceController>(ServiceController);
-    service = module.get<ServicesService>(ServicesService);
+    appointmentController = module.get<AppointmentController>(
+      AppointmentController,
+    );
+    appointmentService = module.get<AppointmentService>(AppointmentService);
   });
 
-  describe('serviceCreate', () => {
-    it('should create a new service', async () => {
-      const createServiceDto: CreateServiceDto = {
-        name: 'Service 1',
-        description: 'A new service',
-        duration: 30,
-        price: 100.0,
+  describe('create', () => {
+    it('should create a new appointment', async () => {
+      const dto: CreateAppointmentDto = {
+        serviceId: 1,
+        serviceProviderId: 1,
+        appointmentDate: new Date('2024-08-11T10:00:00Z'),
+        appointmentStart: '10:00',
+        appointmentEnd: '11:00',
       };
-      const result: ServiceCreateRes = {
+      const result: AppointmentSchema = {
         id: 1,
-        ...createServiceDto,
-      };
-
-      mockService.serviceCreate.mockResolvedValue(result);
-
-      expect(await controller.serviceCreate(createServiceDto)).toEqual(result);
-    });
-  });
-
-  describe('serviceUpdate', () => {
-    it('should update an existing service', async () => {
-      const updateServiceDto: UpdateServiceDto = {
-        name: 'Updated Service',
-      };
-      const id = '1';
-      const result: ServiceCreateRes = {
-        id: 1,
-        name: 'Updated Service',
-        duration: 30,
-        price: 100.0,
-      };
-
-      mockService.serviceUpdate.mockResolvedValue(result);
-
-      expect(await controller.serviceUpdate(id, updateServiceDto)).toEqual(
-        result,
-      );
-    });
-  });
-
-  describe('serviceDetails', () => {
-    it('should return service details by ID', async () => {
-      const id = '1';
-      const result: ServiceDetailsRes = {
-        id: 1,
-        name: 'Service 1',
-        description: 'A service',
-        duration: 30,
-        price: 100.0,
+        service: { id: 1, name: 'Service Name' } as any,
+        serviceProvider: { id: 1, name: 'Provider Name' } as any,
+        user: { id: 1, name: 'User Name' } as any,
+        appointmentDate: new Date('2024-08-11T10:00:00Z'),
+        appointmentStart: '10:00',
+        appointmentEnd: '11:00',
+        status: 'booked',
         createdAt: new Date(),
         updatedAt: new Date(),
       };
 
-      mockService.serviceDetails.mockResolvedValue(result);
+      jest.spyOn(appointmentService, 'create').mockResolvedValue(result);
 
-      expect(await controller.serviceDetails(id)).toEqual(result);
+      expect(
+        await appointmentController.create(dto, { user: { id: '1' } }),
+      ).toBe(result);
+      expect(appointmentService.create).toHaveBeenCalledWith(dto, '1');
     });
   });
 
-  describe('getServices', () => {
-    it('should return a list of services with pagination and sorting', async () => {
-      const paginationDto: PaginationDto = { page: 1, limit: 10 };
-      const sortDto: SortDto = { sortBy: 'name', sortOrder: 'asc' };
+  describe('findAll', () => {
+    it('should return an array of appointments', async () => {
       const result = {
-        data: [
-          {
-            id: 1,
-            name: 'Service 1',
-            description: 'A service',
-            duration: 30,
-            price: 100.0,
-            createdAt: new Date(),
-            updatedAt: new Date(),
-          },
-        ],
-        total: 1,
+        data: [],
+        total: 0,
       };
 
-      mockService.getServices.mockResolvedValue(result);
+      jest.spyOn(appointmentService, 'findAll').mockResolvedValue(result);
 
-      expect(await controller.getServices(paginationDto, sortDto)).toEqual(
+      expect(
+        await appointmentController.findAll(
+          1,
+          10,
+          'createdAt',
+          'ASC',
+          {} as FilterDto,
+        ),
+      ).toBe(result);
+    });
+  });
+
+  describe('findOne', () => {
+    it('should return a single appointment', async () => {
+      const result: AppointmentSchema = {
+        id: 1,
+        service: { id: 1, name: 'Service Name' } as any,
+        serviceProvider: { id: 1, name: 'Provider Name' } as any,
+        user: { id: 1, name: 'User Name' } as any,
+        appointmentDate: new Date('2024-08-11T10:00:00Z'),
+        appointmentStart: '10:00',
+        appointmentEnd: '11:00',
+        status: 'booked',
+        createdAt: new Date(),
+        updatedAt: new Date(),
+      };
+
+      jest.spyOn(appointmentService, 'findOne').mockResolvedValue(result);
+
+      expect(await appointmentController.findOne(1)).toBe(result);
+      expect(appointmentService.findOne).toHaveBeenCalledWith(1);
+    });
+  });
+
+  describe('update', () => {
+    it('should update an appointment', async () => {
+      const dto: UpdateAppointmentDto = {
+        serviceId: 1,
+        serviceProviderId: 1,
+        appointmentDate: new Date('2024-08-11T10:00:00Z'),
+        appointmentStart: '10:00',
+        appointmentEnd: '11:00',
+      };
+      const result: AppointmentSchema = {
+        id: 1,
+        service: { id: 1, name: 'Service Name' } as any,
+        serviceProvider: { id: 1, name: 'Provider Name' } as any,
+        user: { id: 1, name: 'User Name' } as any,
+        appointmentDate: new Date('2024-08-11T10:00:00Z'),
+        appointmentStart: '10:00',
+        appointmentEnd: '11:00',
+        status: 'booked',
+        createdAt: new Date(),
+        updatedAt: new Date(),
+      };
+
+      jest.spyOn(appointmentService, 'update').mockResolvedValue(result);
+
+      expect(await appointmentController.update(1, dto)).toBe(result);
+      expect(appointmentService.update).toHaveBeenCalledWith(1, dto);
+    });
+  });
+
+  describe('remove', () => {
+    it('should delete an appointment', async () => {
+      const result = { affected: 1 };
+
+      jest.spyOn(appointmentService, 'remove').mockResolvedValue(result);
+
+      expect(await appointmentController.remove(1)).toBe(result);
+      expect(appointmentService.remove).toHaveBeenCalledWith(1);
+    });
+  });
+
+  describe('getAppointmentsPerService', () => {
+    it('should return appointments per service', async () => {
+      const result = [{ serviceId: 1, total: 10 }];
+
+      jest
+        .spyOn(appointmentService, 'getAppointmentsPerService')
+        .mockResolvedValue(result);
+
+      expect(await appointmentController.getAppointmentsPerService()).toBe(
         result,
+      );
+      expect(appointmentService.getAppointmentsPerService).toHaveBeenCalledWith(
+        1,
       );
     });
   });
 
-  describe('serviceDelete', () => {
-    it('should delete a service by ID', async () => {
-      const id = '1';
-      mockService.serviceDelete.mockResolvedValue(true);
+  describe('getUserActivity', () => {
+    it('should return user activity', async () => {
+      const result = [{ userId: 1, totalAppointments: 5 }];
 
-      expect(await controller.serviceDelete(id)).toBe(true);
+      jest
+        .spyOn(appointmentService, 'getUserActivity')
+        .mockResolvedValue(result);
+
+      expect(await appointmentController.getUserActivity()).toBe(result);
+      expect(appointmentService.getUserActivity).toHaveBeenCalledWith(1);
+    });
+  });
+
+  describe('getTrendsOverTime', () => {
+    it('should return trends over time', async () => {
+      const result = [{ month: 'January', totalAppointments: 20 }];
+
+      jest
+        .spyOn(appointmentService, 'getTrendsOverTime')
+        .mockResolvedValue(result);
+
+      expect(await appointmentController.getTrendsOverTime()).toBe(result);
+      expect(appointmentService.getTrendsOverTime).toHaveBeenCalledWith(1);
+    });
+  });
+
+  describe('updateStatus', () => {
+    it('should update the status of an appointment', async () => {
+      const dto: any = {
+        status: 'completed',
+      };
+      const result: AppointmentSchema = {
+        id: 1,
+        service: { id: 1, name: 'Service Name' } as any,
+        serviceProvider: { id: 1, name: 'Provider Name' } as any,
+        user: { id: 1, name: 'User Name' } as any,
+        appointmentDate: new Date('2024-08-11T10:00:00Z'),
+        appointmentStart: '10:00',
+        appointmentEnd: '11:00',
+        status: 'completed',
+        createdAt: new Date(),
+        updatedAt: new Date(),
+      };
+
+      jest.spyOn(appointmentService, 'updateStatus').mockResolvedValue(result);
+
+      expect(await appointmentController.updateStatus(1, dto)).toBe(result);
+      expect(appointmentService.updateStatus).toHaveBeenCalledWith(1, dto);
     });
   });
 });

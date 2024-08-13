@@ -127,7 +127,7 @@ export class ChangeAppointmentStatusDto {
     required: true,
   })
   @IsEnum(AppointmentStatus)
-  status: AppointmentStatus;
+  status: string;
 }
 
 export class AppointmentPerServiceDto {

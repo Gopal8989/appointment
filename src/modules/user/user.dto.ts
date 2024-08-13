@@ -138,6 +138,6 @@ export class PaginationDto {
     enum: ['user', 'provider'],
   })
   @IsOptional()
-  @IsIn(['user', 'provider'])
-  userType?: 'user' | 'provider' = 'user';
+  @IsIn(['user', 'provider', 'admin'])
+  userType?: 'user' | 'provider' | 'admin' = 'user';
 }
