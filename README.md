@@ -73,7 +73,7 @@ This project is a NestJS application that allows users to upload profile picture
 9. **Using docker**
    - docker-compose --env-file .env.docker up (setup container)
    - docker-compose down (remove container)
-   - docker-compose build (start container)
+   - docker-compose -env-file .env.docker build (start container)
    - docker-compose restart <container id> (restart container)
 
 **Folder Structure**
