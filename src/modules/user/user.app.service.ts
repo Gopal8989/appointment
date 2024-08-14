@@ -109,4 +109,27 @@ export class UsersService {
     user.isActive = !user.isActive;
     return this.usersRepository.save(user);
   }
+  async seedUsers(): Promise<void> {
+    const email = 'admin@yopmail.com';
+    const existingUser = await this.usersRepository.findOneBy({ email });
+
+    if (!existingUser) {
+      await this.usersRepository.insert({
+        firstName: 'admin',
+        lastName: 'test',
+        email,
+        password:
+          '$2b$10$S0TLzLyN2msPjdG4jCTX5e32RdYYbKSyByJjf6mKBWBHt1YBWck9C',
+        profilePic: 'profile1.jpg',
+        roleType: 'Admin',
+        isActive: true,
+        createdAt: new Date(),
+        updatedAt: new Date(),
+      });
+
+      console.log('User created successfully.');
+    } else {
+      console.log('User already exists.');
+    }
+  }
 }

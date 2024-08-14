@@ -239,14 +239,14 @@ export class AppointmentController {
     return this.appointmentService.remove(id);
   }
 
-  @Cron(CronExpression.EVERY_10_SECONDS)
+  @Cron(CronExpression.EVERY_DAY_AT_8AM)
   async handleReminders() {
     console.log('handleReminders is triggered');
     await this.appointmentService.sendReminders();
     await this.appointmentService.sendFollowUpEmails();
   }
 
-  @Cron(CronExpression.EVERY_10_SECONDS)
+  @Cron(CronExpression.EVERY_WEEKEND)
   async handleWeeklySummaries() {
     console.log('handleWeeklySummaries is triggered');
     await this.appointmentService.sendWeeklySummary();

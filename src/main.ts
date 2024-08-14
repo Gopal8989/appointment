@@ -5,6 +5,7 @@ import { join } from 'path';
 import helmet from 'helmet';
 import * as compression from 'compression';
 import { SwaggerModule, DocumentBuilder } from '@nestjs/swagger';
+import { UsersService } from './modules/user/user.app.service';
 
 async function bootstrap() {
   const app = await NestFactory.create<NestExpressApplication>(AppModule);
@@ -30,6 +31,8 @@ async function bootstrap() {
 
   const document = SwaggerModule.createDocument(app, config);
   SwaggerModule.setup('api-docs', app, document);
+  const userService = app.get(UsersService);
+  await userService.seedUsers();
 
   await app.listen(4000);
 }

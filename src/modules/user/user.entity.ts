@@ -52,18 +52,23 @@ export class UserSchema {
   @UpdateDateColumn({ name: 'updated_at' })
   updatedAt: Date;
 
-  // One-to-Many relationship with ServiceSchema
-  @OneToMany(() => ServiceSchema, (service) => service.serviceProvider)
-  services: ServiceSchema[];
+  // Optional One-to-Many relationship with ServiceSchema
+  @OneToMany(() => ServiceSchema, (service) => service.serviceProvider, {
+    nullable: true,
+  })
+  services?: ServiceSchema[];
 
-  // One-to-Many relationship with AppointmentSchema for the 'user' field
-  @OneToMany(() => AppointmentSchema, (appointment) => appointment.user)
-  appointmentsAsUser: AppointmentSchema[];
+  // Optional One-to-Many relationship with AppointmentSchema for the 'user' field
+  @OneToMany(() => AppointmentSchema, (appointment) => appointment.user, {
+    nullable: true,
+  })
+  appointmentsAsUser?: AppointmentSchema[];
 
-  // One-to-Many relationship with AppointmentSchema for the 'serviceProvider' field
+  // Optional One-to-Many relationship with AppointmentSchema for the 'serviceProvider' field
   @OneToMany(
     () => AppointmentSchema,
     (appointment) => appointment.serviceProvider,
+    { nullable: true },
   )
-  appointmentsAsProvider: AppointmentSchema[];
+  appointmentsAsProvider?: AppointmentSchema[];
 }

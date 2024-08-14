@@ -55,6 +55,7 @@ This project is a NestJS application that allows users to upload profile picture
 5. **Development**
 
    - npm run start:dev
+   - Create Admin using(seed)
 
 6. **Production**
 
@@ -76,7 +77,7 @@ This project is a NestJS application that allows users to upload profile picture
    - docker-compose restart <container id> (restart container)
 
 **Folder Structure**
-`src/
+src/
 ├── app.module.ts
 ├── config/
 │ └── config.service.ts
@@ -104,6 +105,11 @@ This application uses Swagger for API documentation. You can access the Swagger 
 After running the application, you can access the Swagger documentation at:
 
 [http://localhost:4000/api-docs](http://localhost:4000/api-docs)
+
+## login details
+
+- Admin email: admin@yopmail.com
+- password: Test@123
 
 Replace `localhost:4000` with your actual server address if you're deploying this application in a different environment.
 
