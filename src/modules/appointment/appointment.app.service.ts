@@ -98,7 +98,6 @@ export class AppointmentService {
       },
     });
 
-    console.log(appointmentRes);
     if (appointmentRes) {
       throw new BadRequestException(`Slot already booked`);
     }
@@ -174,9 +173,7 @@ export class AppointmentService {
         'appointment.appointmentEnd',
         'appointment.status',
         'appointment.createdAt',
-        'user.id', // describe('getAppointmentsPerService', () => {
-        //   it('should return appointments per service', async () => {
-        //     const result =
+        'user.id',
         'user.firstName',
         'user.lastName',
         'service.id',
@@ -347,7 +344,6 @@ export class AppointmentService {
   async sendReminders() {
     const now = moment();
     const twentyFourHoursLater = moment().add(24, 'hours');
-    console.log('hiiiiiiiiiiiiiiii');
     const upcomingAppointments = await this.appointmentRepository.find({
       where: {
         appointmentDate: Between(now.toDate(), twentyFourHoursLater.toDate()),

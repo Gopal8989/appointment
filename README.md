@@ -49,7 +49,7 @@ This project is a NestJS application that allows users to upload profile picture
    - npm install
 
 3. **Set Up Environment Variables**
-   - Copy .env example file .env
+   - Copy .env example file .env in src folder
 4. **Database Setup**
 
 5. **Development**

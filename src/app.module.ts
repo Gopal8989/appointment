@@ -12,7 +12,6 @@ import { AppointmentModule } from './modules/appointment/appointment.app.module'
   imports: [
     ConfigModule.forRoot({ isGlobal: true }),
     DatabaseModule,
-
     JwtModule.register({
       global: true,
       secret: jwtConstants.secret,
