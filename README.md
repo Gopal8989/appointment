@@ -2,13 +2,13 @@
 
 ## Tech Stack:
 
-○ Backend: Node.js, Express.js, NestJS
-○ Database: Any (Mysql)
-○ Authentication: JWT (JSON Web Tokens)
-○ Unit Testing: Jest
-○ API Documentation: Swagger
-○ Additional: AWS S3 for storing profile pictures, Docker for containerization
-This project is a NestJS application that allows users to upload profile pictures to AWS S3, send email notifications using AWS SES, and includes a periodic cleanup service for old files on S3.
+- Backend: Node.js, Express.js, NestJS
+- Database: Any (Mysql)
+- Authentication: JWT (JSON Web Tokens)
+- Unit Testing: Jest
+- API Documentation: Swagger
+- Additional: AWS S3 for storing profile pictures, Docker for containerization
+- This project is a NestJS application that allows users to upload profile pictures to AWS S3, send email notifications using AWS SES, and includes a periodic cleanup service for old files on S3.
 
 ## Table of Contents
 
@@ -42,7 +42,7 @@ This project is a NestJS application that allows users to upload profile picture
 
 2. **Install Dependencies**
 
-npm install
+   npm install
 
 3. **Set Up Environment Variables**
    Copy .env example file .env
@@ -92,10 +92,32 @@ After running the application, you can access the Swagger documentation at:
 
 Replace `localhost:4000` with your actual server address if you're deploying this application in a different environment.
 
-```
+**API Related**
 
-```
+- 1.  User Signup and Login
+      `Implement user authentication, allowing users to sign up and log in to the platform. `
+- 2. Admin Add Service
+     ` 
+ Admin Role: The Admin can add new services to the platform.
+ Service Details: Admin provides the following details:
+ Name: The name of the service (e.g., "Haircut").
+ Duration: The duration of the service in minutes (e.g., 30 minutes).
+ Price: The cost of the service.  `
+- 3.  Provider Add Availability
+      ``
+      Provider Role: Providers can add their availability for the services they offer.
+      Availability Details:
+      Start Time: The start time of the availability window (e.g., 9:00 AM).
+      End Time: The end time of the availability window (e.g., 5:00 PM).
+      Service Duration: The service duration is used to automatically create time slots within the availability window. For example, if a service duration is 30 minutes, slots like 9:00 AM - 9:30 AM, 9:30 AM - 10:00 AM, etc., will be generated.
 
-First create account
+            ``
 
-# appointment
+- 4. User Create Booking
+     `User Role: Users can create bookings for services.
+   Booking Process:
+   Select Service: The user selects a service they wish to book.
+   Select Provider: The user selects a provider offering that service.
+   Select Date: The user selects a date for the booking.
+   Slot Availability API Call: An API call retrieves the available time slots for the selected date based on the provider’s availability and the service duration.
+   Select Slot: The user selects an available time slot to complete the booking.`
