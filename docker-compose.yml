@@ -24,10 +24,10 @@ services:
     image: mysql:8.0.39
     container_name: mysql
     ports:
-      - '${DB_PORT}:3306'
+      - '3306:3306'
     environment:
       MYSQL_ROOT_PASSWORD: rootpassword
-      MYSQL_DATABASE: { DB_DATABASE }
+      MYSQL_DATABASE: ${DB_DATABASE}
       MYSQL_USER: ${DB_USERNAME}
       MYSQL_PASSWORD: ${DB_PASSWORD}
     networks:

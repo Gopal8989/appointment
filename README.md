@@ -71,7 +71,7 @@ This project is a NestJS application that allows users to upload profile picture
    - npm run lint
 
 9. **Using docker**
-   - docker-compose up -d (setup container)
+   - docker-compose --env-file .env.docker up (setup container)
    - docker-compose down (remove container)
    - docker-compose build (start container)
    - docker-compose restart <container id> (restart container)
