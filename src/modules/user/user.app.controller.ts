@@ -165,7 +165,7 @@ export class UserController {
 
   @UseGuards(AuthGuard)
   @ApiBearerAuth()
-  // @Roles(Role.Admin)
+  @Roles(Role.Admin)
   @Get('users')
   @ApiOperation({ summary: 'Get list of users with pagination and sorting' })
   @ApiResponse({ status: 200, description: 'List of users' })
@@ -180,7 +180,7 @@ export class UserController {
 
   @UseGuards(AuthGuard)
   @ApiBearerAuth()
-  // @Roles(Role.Admin)
+  @Roles(Role.Admin)
   @Patch('user/:id/toggle-active')
   @ApiOperation({ summary: 'Toggle user active status' })
   @ApiResponse({ status: 200, description: 'User status toggled successfully' })

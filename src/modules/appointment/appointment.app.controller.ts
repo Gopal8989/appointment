@@ -44,6 +44,7 @@ export class AppointmentController {
 
   @Get('appointments-per-service')
   @UseGuards(AuthGuard)
+  @Roles(Role.Admin)
   @ApiOperation({ summary: 'Get the number of appointments per service' })
   @ApiResponse({
     status: HttpStatus.OK,
@@ -55,6 +56,7 @@ export class AppointmentController {
 
   @Get('user-activity')
   @UseGuards(AuthGuard)
+  @Roles(Role.Admin)
   @ApiOperation({ summary: 'Get user activity statistics' })
   @ApiResponse({
     status: HttpStatus.OK,
@@ -66,6 +68,7 @@ export class AppointmentController {
 
   @Get('trends-over-time')
   @UseGuards(AuthGuard)
+  @Roles(Role.Admin)
   @ApiOperation({ summary: 'Get trends over time for appointments' })
   @ApiResponse({
     status: HttpStatus.OK,
@@ -77,7 +80,7 @@ export class AppointmentController {
 
   @Post()
   @UseGuards(AuthGuard)
-  // @Roles(Role.Admin)
+  @Roles(Role.User)
   @UsePipes(ValidationPipe)
   @ApiOperation({ summary: 'Create a new appointment' })
   @ApiBody({ type: CreateAppointmentDto })
@@ -166,7 +169,7 @@ export class AppointmentController {
 
   @Put(':id')
   @UseGuards(AuthGuard)
-  // @Roles(Role.Admin)
+  @Roles(Role.Admin)
   @UsePipes(ValidationPipe)
   @ApiOperation({ summary: 'Update an existing appointment' })
   @ApiParam({ name: 'id', type: Number, description: 'Appointment ID' })
@@ -193,7 +196,7 @@ export class AppointmentController {
 
   @Put(':id/status')
   @UseGuards(AuthGuard)
-  // @Roles(Role.Admin)
+  @Roles(Role.User)
   @UsePipes(ValidationPipe)
   @ApiOperation({ summary: 'Update the status of an appointment' })
   @ApiParam({ name: 'id', type: Number, description: 'Appointment ID' })
@@ -220,7 +223,7 @@ export class AppointmentController {
 
   @Delete(':id')
   @UseGuards(AuthGuard)
-  // @Roles(Role.Admin)
+  @Roles(Role.Admin)
   @HttpCode(HttpStatus.NO_CONTENT)
   @ApiOperation({ summary: 'Delete an appointment by its ID' })
   @ApiParam({ name: 'id', type: Number, description: 'Appointment ID' })

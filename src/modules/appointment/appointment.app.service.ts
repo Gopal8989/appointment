@@ -61,14 +61,60 @@ export class AppointmentService {
       throw new BadRequestException(`Provider not exist`);
     }
 
-    const availabilityResult = await this.availabilityRepository.findOne({
+    const daysOfWeek = [
+      'Sunday',
+      'Monday',
+      'Tuesday',
+      'Wednesday',
+      'Thursday',
+      'Friday',
+      'Saturday',
+    ];
+
+    const date = new Date(createAppointmentDto?.appointmentDate);
+    const dayIndex = date.getDay();
+    const availabilityResult = await this.availabilityRepository.find({
       where: {
         serviceProvider: { id: createAppointmentDto?.serviceProviderId },
         service: { id: createAppointmentDto?.serviceId },
+        dayOfWeek: daysOfWeek[dayIndex],
       },
     });
     if (!availabilityResult) {
       throw new BadRequestException(`Availability not exist`);
+    }
+    const appointmentRes: any = await this.appointmentRepository.findOne({
+      where: {
+        serviceProvider: { id: createAppointmentDto?.serviceProviderId },
+        service: { id: createAppointmentDto?.serviceId },
+        appointmentDate: Raw((alias) => `DATE(${alias}) = :date`, {
+          date: moment(createAppointmentDto?.appointmentDate).format(
+            'YYYY-MM-DD',
+          ),
+        }),
+        appointmentStart: createAppointmentDto?.appointmentStart,
+        appointmentEnd: createAppointmentDto?.appointmentEnd,
+        status: 'booked',
+      },
+    });
+
+    console.log(appointmentRes);
+    if (appointmentRes) {
+      throw new BadRequestException(`Slot already booked`);
+    }
+
+    const checkSlot = availabilityResult.filter((e) => {
+      const check = JSON.parse(e?.slots);
+      if (
+        check[0]?.start == createAppointmentDto?.appointmentStart &&
+        check[0]?.end == createAppointmentDto?.appointmentEnd
+      ) {
+        return e;
+      }
+    });
+
+    if (checkSlot.length == 0) {
+      throw new BadRequestException(`Slot not exists`);
     }
 
     const appointment = this.appointmentRepository.create(bodyData);

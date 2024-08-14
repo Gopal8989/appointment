@@ -1,6 +1,6 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
+import { Raw, Repository } from 'typeorm';
 import { AvailabilitySchema } from './availability.entity';
 import {
   CreateAvailabilityDto,
@@ -200,7 +200,6 @@ export class AvailabilityService {
       where.serviceProvider = { id: userId };
     }
     if (appointmentDate) {
-      const date = new Date(appointmentDate);
       const daysOfWeek = [
         'Sunday',
         'Monday',
@@ -210,18 +209,14 @@ export class AvailabilityService {
         'Friday',
         'Saturday',
       ];
-
+      const date = new Date(appointmentDate);
       const dayIndex = date.getDay();
-      const dayName = daysOfWeek[dayIndex];
-
-      const capitalizedDayOfWeek =
-        dayName.charAt(0).toUpperCase() + dayName.slice(1);
-      where.dayOfWeek = capitalizedDayOfWeek;
+      where.dayOfWeek = daysOfWeek[dayIndex];
     }
 
     let result: any = await this.availabilityRepository
       .createQueryBuilder('availability')
-      // .where(where)
+      .where(where)
       .leftJoinAndSelect('availability.serviceProvider', 'serviceProvider')
       .leftJoinAndSelect('availability.service', 'service')
       .select([
@@ -238,10 +233,19 @@ export class AvailabilityService {
         'service.description',
       ])
       .getMany();
+
     result = await Promise.all(
       result.map(async (e) => {
         const appointment: any = await this.appointmentRepository.findOne({
-          where: { service: { id: serviceId || 0 } },
+          where: {
+            service: { id: serviceId || 0 },
+            serviceProvider: { id: userId },
+            appointmentDate: Raw((alias) => `DATE(${alias}) = :date`, {
+              date: new Date(appointmentDate || new Date())
+                .toISOString()
+                .split('T')[0],
+            }),
+          },
         });
         const slot = JSON.parse(e?.slots);
 

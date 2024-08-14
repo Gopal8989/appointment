@@ -38,7 +38,6 @@ import { Roles } from '../../midleware/roles.decorator';
 @ApiTags('Availability')
 @ApiBearerAuth()
 @Controller('availability')
-// @UseGuards(AuthGuard) // Apply the guard to the entire controller
 export class AvailabilityController {
   constructor(private readonly availabilityService: AvailabilityService) {}
 
@@ -57,6 +56,7 @@ export class AvailabilityController {
   @Post()
   @UsePipes(ValidationPipe)
   @UseGuards(AuthGuard)
+  @Roles(Role.Provider)
   @ApiOperation({ summary: 'Create a new availability' })
   @ApiBody({ type: CreateAvailabilityDto })
   @ApiResponse({ status: HttpStatus.CREATED })
@@ -95,6 +95,7 @@ export class AvailabilityController {
   @Put(':id')
   @UsePipes(ValidationPipe)
   @UseGuards(AuthGuard)
+  @Roles(Role.Provider)
   @ApiOperation({ summary: 'Update an existing availability' })
   @ApiParam({ name: 'id', type: Number, description: 'Availability ID' })
   @ApiBody({ type: UpdateAvailabilityDto })
@@ -169,6 +170,7 @@ export class AvailabilityController {
 
   @Delete(':id')
   @UseGuards(AuthGuard)
+  @Roles(Role.Provider)
   @HttpCode(HttpStatus.NO_CONTENT)
   @ApiOperation({ summary: 'Delete an availability by ID' })
   @ApiParam({ name: 'id', type: Number, description: 'Availability ID' })

@@ -44,7 +44,7 @@ export class ServiceController {
 
   @Post()
   @UseGuards(AuthGuard)
-  // @Roles(Role.Admin)
+  @Roles(Role.Admin)
   @UsePipes(ValidationPipe)
   @ApiOperation({ summary: 'Create a new service' })
   @ApiBody({ type: CreateServiceDto })
@@ -58,7 +58,7 @@ export class ServiceController {
 
   @Put(':id')
   @UseGuards(AuthGuard)
-  // @Roles(Role.Admin)
+  @Roles(Role.Admin)
   @UsePipes(ValidationPipe)
   @ApiOperation({ summary: 'Update an existing service' })
   @ApiParam({ name: 'id', type: String, description: 'Service ID' })
@@ -114,7 +114,7 @@ export class ServiceController {
 
   @Delete(':id')
   @UseGuards(AuthGuard)
-  // @Roles(Role.Admin)
+  @Roles(Role.Admin)
   @HttpCode(HttpStatus.NO_CONTENT)
   @ApiOperation({ summary: 'Delete a service by ID' })
   @ApiParam({ name: 'id', type: String, description: 'Service ID' })
